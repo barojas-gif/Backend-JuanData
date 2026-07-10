@@ -1,0 +1,14 @@
+target/
+.git/
+.gitignore
+.idea/
+*.iml
+.vscode/
+.env
+.env.*
+!/.env.example
+src/main/resources/application-dev.properties
+src/main/resources/application-local.properties
+*.log
+logs/
+HELP.md
