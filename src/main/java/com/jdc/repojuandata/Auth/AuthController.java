@@ -1,6 +1,7 @@
 package com.jdc.repojuandata.Auth;
 
 import com.jdc.repojuandata.DTO.RecuperarRequest;
+import com.jdc.repojuandata.config.EmailDeliveryException;
 import com.jdc.repojuandata.config.EmailService;
 import com.jdc.repojuandata.jwt.JwtService;
 import com.jdc.repojuandata.models.UsuariosEntity;
@@ -84,16 +85,7 @@ public class AuthController {
         }
 
         UsuariosEntity usuario = optionalUsuario.get();
-
-        // Generar contraseña temporal
         String contrasenaTemporal = generarContrasenaTemporal();
-
-        // Encriptar y guardar
-        usuario.setContrasenaUsuario(passwordEncoder.encode(contrasenaTemporal));
-        usuario.setTemporalContrasena(true); // Marca como temporal
-        usuariosRepository.save(usuario);
-
-        // Enviar correo con HTML
         String asunto = "Recuperación de contraseña - JuanData";
 
         String mensajeHtml = """
@@ -117,7 +109,16 @@ public class AuthController {
         </html>
         """.formatted(usuario.getNombreUsuario(), contrasenaTemporal);
 
-        emailService.enviarCorreo(usuario.getCorreoUsuario(), asunto, mensajeHtml);
+        try {
+            emailService.enviarCorreo(usuario.getCorreoUsuario(), asunto, mensajeHtml);
+        } catch (EmailDeliveryException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("No se pudo enviar el correo. Intenta más tarde.");
+        }
+
+        usuario.setContrasenaUsuario(passwordEncoder.encode(contrasenaTemporal));
+        usuario.setTemporalContrasena(true);
+        usuariosRepository.save(usuario);
 
         Map<String, String> response = new HashMap<>();
         response.put("mensaje", "Se ha enviado una nueva contraseña temporal al correo.");
