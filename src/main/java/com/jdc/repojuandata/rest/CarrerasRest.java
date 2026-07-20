@@ -3,8 +3,8 @@ package com.jdc.repojuandata.rest;
 import com.jdc.repojuandata.DTO.CarrerasDTO;
 import com.jdc.repojuandata.models.CarrerasEntity;
 import com.jdc.repojuandata.models.FacultadEntity;
-import com.jdc.repojuandata.service.ICarrerasService;
-import com.jdc.repojuandata.service.IFacultadService;
+import com.jdc.repojuandata.service.CarrerasService;
+import com.jdc.repojuandata.service.FacultadService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +18,10 @@ import java.util.List;
 public class CarrerasRest {
 
     @Autowired
-    private ICarrerasService icarrerasService;
+    private CarrerasService icarrerasService;
 
     @Autowired
-    private IFacultadService iFacultadService;
+    private FacultadService iFacultadService;
 
     @GetMapping("/listar")
     public ResponseEntity<List<CarrerasEntity>> listarCarreras(){

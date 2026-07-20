@@ -1,7 +1,7 @@
 package com.jdc.repojuandata.rest;
 
 import com.jdc.repojuandata.models.RolesEntity;
-import com.jdc.repojuandata.service.IRolesService;
+import com.jdc.repojuandata.service.RolesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import java.util.List;
 public class RolesRest {
 
     @Autowired
-    private IRolesService iRolesService;
+    private RolesService iRolesService;
 
     @GetMapping("/listar")
     public ResponseEntity<List<RolesEntity>> listarRoles() {

@@ -3,19 +3,16 @@ package com.jdc.repojuandata.service;
 import com.jdc.repojuandata.DTO.DocumentoMasVistoDTO;
 import com.jdc.repojuandata.config.EmailService;
 import com.jdc.repojuandata.models.DocumentosEntity;
+import com.jdc.repojuandata.models.UsuariosEntity;
 import com.jdc.repojuandata.repository.DocumentosRepository;
-import com.jdc.repojuandata.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.core.context.SecurityContextHolder;
-import com.jdc.repojuandata.models.UsuariosEntity;
-
 
 import java.util.List;
 
 @Service
-public class DocumentosServiceImplment implements IDocumentosService {
+public class DocumentosService {
 
     @Autowired
     private DocumentosRepository documentosRepository;
@@ -23,53 +20,46 @@ public class DocumentosServiceImplment implements IDocumentosService {
     @Autowired
     private EmailService emailService;
 
-    @Override
+    @Autowired
+    private AuthenticatedUserService authenticatedUserService;
+
     @Transactional(readOnly = true)
     public List<DocumentosEntity> findAll() {
         return documentosRepository.findAll();
     }
 
-    @Override
     @Transactional(readOnly = true)
     public DocumentosEntity findById(Long id) {
         return documentosRepository.findById(id).orElse(null);
     }
 
-    @Override
     @Transactional
     public void save(DocumentosEntity documentosEntity) {
         documentosRepository.save(documentosEntity);
     }
 
-    @Override
     @Transactional
     public void deleteById(Long id) {
         documentosRepository.deleteById(id);
     }
 
-    @Override
     public List<DocumentosEntity> findByMateriaId(Long id) {
         return documentosRepository.findByMateriaId(id);
     }
 
-    @Override
     public List<DocumentosEntity> findByArchivoNombre(String archivoNombre) {
         return documentosRepository.findByArchivoDocumento(archivoNombre);
     }
 
-    @Override
     public List<DocumentoMasVistoDTO> obtenerDocumentosMasVistos() {
         return documentosRepository.obtenerDocumentosMasVistos();
     }
 
-    @Override
     public List<DocumentosEntity> findByEstado(int estado) {
         return documentosRepository.findByEstado(estado);
     }
 
-
     // Método que actualiza el estado y envía correo
-    @Override
     public void actualizarEstadoYEnviarCorreo(Long id, int estado, String mensaje, String correoEstudiante) {
         // Buscar documento
         documentosRepository.findById(id).ifPresent(documento -> {
@@ -145,12 +135,10 @@ public class DocumentosServiceImplment implements IDocumentosService {
 </html>
 """.formatted(nombreEstudiante, nombreArchivo, tema, estadoTexto, mensaje);
 
-
             // Enviar correo
             emailService.enviarCorreo(correoEstudiante, "Actualización de estado de documento", htmlBody);
         });
     }
-
 
     public void actualizarEstado(Long idDocumento, int nuevoEstado) {
         documentosRepository.findById(idDocumento).ifPresent(documento -> {
@@ -159,18 +147,12 @@ public class DocumentosServiceImplment implements IDocumentosService {
         });
     }
 
-    @Override
     public List<DocumentosEntity> findBySemillero(Long idSemillero) {
-        return documentosRepository.findBySemillero_Id(idSemillero); // usa el nuevo nombre
+        return documentosRepository.findBySemillero_Id(idSemillero);
     }
 
-
-    @Override
     public List<DocumentosEntity> findBySemilleroDelUsuarioAutenticado() {
-        String correo = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        UsuariosEntity usuario = usuarioRepository.findByCorreoUsuario(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UsuariosEntity usuario = authenticatedUserService.getUsuarioAutenticado();
 
         if (usuario.getSemillero() == null) {
             return List.of(); // El usuario no tiene semillero asignado
@@ -179,13 +161,4 @@ public class DocumentosServiceImplment implements IDocumentosService {
         Long idSemillero = usuario.getSemillero().getId();
         return documentosRepository.findBySemillero_Id(idSemillero);
     }
-
-
-    public List<DocumentosEntity> findBySemilleroId(Long idSemillero) {
-        return documentosRepository.findBySemillero_Id(idSemillero);
-    }
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
 }

@@ -3,10 +3,10 @@ package com.jdc.repojuandata.rest;
 import com.jdc.repojuandata.DTO.MateriasDTO;
 import com.jdc.repojuandata.DTO.PublicacionesDTO;
 import com.jdc.repojuandata.models.*;
-import com.jdc.repojuandata.service.ICarrerasService;
-import com.jdc.repojuandata.service.IDocumentosService;
-import com.jdc.repojuandata.service.IMateriasService;
-import com.jdc.repojuandata.service.IPublicacionesService;
+import com.jdc.repojuandata.service.CarrerasService;
+import com.jdc.repojuandata.service.DocumentosService;
+import com.jdc.repojuandata.service.MateriasService;
+import com.jdc.repojuandata.service.PublicacionesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,16 +20,16 @@ import java.util.List;
 public class PublicacionesRest {
 
     @Autowired
-    private IPublicacionesService iPublicacionesService;
+    private PublicacionesService iPublicacionesService;
 
     @Autowired
-    private ICarrerasService iCarrerasService;
+    private CarrerasService iCarrerasService;
 
     @Autowired
-    private IMateriasService iMateriasService;
+    private MateriasService iMateriasService;
 
     @Autowired
-    private  IDocumentosService iDocumentosService;
+    private DocumentosService iDocumentosService;
 
     @GetMapping("/listar")
     public ResponseEntity<List<MateriasEntity>> listarPublicaciones(){

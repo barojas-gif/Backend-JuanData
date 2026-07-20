@@ -17,21 +17,19 @@ import java.util.Map;
 @RequestMapping("api/usuarios")
 public class UsuariosRest {
     @Autowired
-    private IUsuariosService iUsuariosService;
+    private UsuariosService iUsuariosService;
 
     @Autowired
-    private IRolesService iRolesService;
+    private RolesService iRolesService;
 
     @Autowired
-    private ICarrerasService iCarrerasService;
+    private CarrerasService iCarrerasService;
 
     @Autowired
-    private ISemestresService iSemestresService;
-    @Autowired
-    private UsuariosServiceImplement usuariosServiceImplement;
+    private SemestresService iSemestresService;
 
     @Autowired
-    private ISemilleroService iSemilleroService;
+    private SemilleroService iSemilleroService;
 
     @GetMapping("/findById/{id}")
     public ResponseEntity<UsuariosEntity> listarUsuariosById(@PathVariable("id") Long id){

@@ -2,8 +2,8 @@ package com.jdc.repojuandata.rest;
 
 import com.jdc.repojuandata.DTO.ModeracionesDTO;
 import com.jdc.repojuandata.models.*;
-import com.jdc.repojuandata.service.IDocumentosService;
-import com.jdc.repojuandata.service.IModeracionesService;
+import com.jdc.repojuandata.service.DocumentosService;
+import com.jdc.repojuandata.service.ModeracionesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +17,10 @@ import java.util.List;
 public class ModeracionesRest {
 
     @Autowired
-    private IModeracionesService iModeracionesService;
+    private ModeracionesService iModeracionesService;
 
     @Autowired
-    private IDocumentosService iDocumentosService;
+    private DocumentosService iDocumentosService;
 
     @GetMapping("/listar")
     public ResponseEntity<List<ModeracionesEntity>> listarModeraciones(){
@@ -73,7 +73,7 @@ public class ModeracionesRest {
             if(aux == null){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró la moderacion con el id: " + id);
             }
-            iModeracionesService.deletebyid(id);
+            iModeracionesService.deleteById(id);
             return ResponseEntity.ok("Moderacion eliminada con el id: " + id);
         }catch (RuntimeException ex){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar: " + ex.getMessage());
