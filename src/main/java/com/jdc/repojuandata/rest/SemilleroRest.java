@@ -3,7 +3,7 @@ package com.jdc.repojuandata.rest;
 import com.jdc.repojuandata.models.CarrerasEntity;
 import com.jdc.repojuandata.models.SemilleroEntity;
 import com.jdc.repojuandata.repository.CarrerasRepository;
-import com.jdc.repojuandata.service.ISemilleroService;
+import com.jdc.repojuandata.service.SemilleroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class SemilleroRest {
 
     
     @Autowired
-    private ISemilleroService semilleroService;
+    private SemilleroService semilleroService;
 
     @Autowired
     private CarrerasRepository carrerasRepository;

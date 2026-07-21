@@ -5,7 +5,6 @@ import com.jdc.repojuandata.DTO.*;
 import com.jdc.repojuandata.config.EmailService;
 import com.jdc.repojuandata.models.*;
 import com.jdc.repojuandata.repository.DocumentosRepository;
-import com.jdc.repojuandata.repository.UsuarioRepository;
 import com.jdc.repojuandata.repository.VistaRepository;
 import com.jdc.repojuandata.service.*;
 import jakarta.validation.Valid;
@@ -13,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -35,30 +32,28 @@ import java.util.*;
 public class DocumentosRest {
 
     @Autowired
-    private IDocumentosService iDocumentosService;
+    private DocumentosService iDocumentosService;
 
     @Autowired
-    private IMateriasService iMateriasService;
+    private MateriasService iMateriasService;
 
     @Autowired
-    private IUsuariosService iUsuariosService;
+    private UsuariosService iUsuariosService;
 
     @Autowired
-    private IVistaService iVistaService;
+    private VistaService iVistaService;
 
     @Autowired
     private VistaRepository vistaRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private DocumentosRepository documentosRepository;
 
     @Autowired
     private EmailService emailService;
+
     @Autowired
-    private DocumentosServiceImplment documentosServiceImplment;
+    private AuthenticatedUserService authenticatedUserService;
 
 
     @GetMapping("/listar")
@@ -387,11 +382,9 @@ public class DocumentosRest {
 
 
     @GetMapping("/pendientes")
-    public ResponseEntity<List<DocumentoPendienteDTO>> obtenerDocumentosPendientes(Authentication authentication) {
+    public ResponseEntity<List<DocumentoPendienteDTO>> obtenerDocumentosPendientes() {
 
-        // Obtener usuario autenticado por su correo (que está en el token JWT)
-        UsuariosEntity admin = usuarioRepository.findByCorreoUsuario(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UsuariosEntity admin = authenticatedUserService.getUsuarioAutenticado();
 
         Long idCarrera = admin.getCarrerasEntity().getIdCarrera();
 
@@ -416,9 +409,8 @@ public class DocumentosRest {
     }
 
     @GetMapping("/pendientes/count")
-    public ResponseEntity<Long> obtenerCantidadPendientes(Authentication authentication) {
-        UsuariosEntity admin = usuarioRepository.findByCorreoUsuario(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public ResponseEntity<Long> obtenerCantidadPendientes() {
+        UsuariosEntity admin = authenticatedUserService.getUsuarioAutenticado();
 
         Long idCarrera = admin.getCarrerasEntity().getIdCarrera();
 
@@ -429,10 +421,8 @@ public class DocumentosRest {
 
 
     @GetMapping("/aceptados")
-    public ResponseEntity<List<DocumentoPendienteDTO>> obtenerDocumentosAceptados(Authentication authentication) {
-        String correo = authentication.getName(); // correo del administrador autenticado
-        UsuariosEntity admin = usuarioRepository.findByCorreoUsuario(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public ResponseEntity<List<DocumentoPendienteDTO>> obtenerDocumentosAceptados() {
+        UsuariosEntity admin = authenticatedUserService.getUsuarioAutenticado();
 
         Long idCarreraAdmin = admin.getCarrerasEntity().getIdCarrera();
 
@@ -535,11 +525,11 @@ public class DocumentosRest {
     }
 
     @Autowired
-    private ISemilleroService semilleroService;
+    private SemilleroService semilleroService;
 
     @GetMapping("/semillero/{id}")
     public List<DocumentosEntity> getDocumentosPorSemillero(@PathVariable Long id) {
-        List<DocumentosEntity> docs = documentosServiceImplment.findBySemilleroId(id);
+        List<DocumentosEntity> docs = iDocumentosService.findBySemillero(id);
         List<DocumentosEntity> activos = docs.stream()
                 .filter(doc -> doc.getEstado() == 1)
                 .toList();
@@ -586,12 +576,7 @@ public class DocumentosRest {
 
     @GetMapping("/usuario/semillero")
     public ResponseEntity<List<DocumentosEntity>> obtenerDocumentosPorSemilleroUsuario() {
-        // Obtener el correo del usuario autenticado
-        String correo = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        // Buscar el usuario
-        UsuariosEntity usuario = usuarioRepository.findByCorreoUsuario(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UsuariosEntity usuario = authenticatedUserService.getUsuarioAutenticado();
 
         // Validar que tenga semillero
         if (usuario.getSemillero() == null) {
@@ -628,10 +613,7 @@ public class DocumentosRest {
 
     @GetMapping("/usuario/mi-semillero")
     public ResponseEntity<?> obtenerSemilleroDelUsuario() {
-        String correo = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        UsuariosEntity usuario = usuarioRepository.findByCorreoUsuario(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UsuariosEntity usuario = authenticatedUserService.getUsuarioAutenticado();
 
         if (usuario.getSemillero() == null) {
             return ResponseEntity.noContent().build();

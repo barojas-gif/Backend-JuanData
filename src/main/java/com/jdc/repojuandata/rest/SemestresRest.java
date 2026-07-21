@@ -2,7 +2,7 @@ package com.jdc.repojuandata.rest;
 
 import com.jdc.repojuandata.models.FacultadEntity;
 import com.jdc.repojuandata.models.SemestresEntity;
-import com.jdc.repojuandata.service.ISemestresService;
+import com.jdc.repojuandata.service.SemestresService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import java.util.List;
 public class SemestresRest {
 
     @Autowired
-    private ISemestresService iSemestresService;
+    private SemestresService iSemestresService;
 
     @GetMapping("/listar")
     public ResponseEntity<List<SemestresEntity>> listarSemestres() {

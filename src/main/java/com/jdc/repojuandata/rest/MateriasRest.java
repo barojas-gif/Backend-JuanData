@@ -3,9 +3,9 @@ package com.jdc.repojuandata.rest;
 
 import com.jdc.repojuandata.DTO.MateriasDTO;
 import com.jdc.repojuandata.models.*;
-import com.jdc.repojuandata.service.ICarrerasService;
-import com.jdc.repojuandata.service.IMateriasService;
-import com.jdc.repojuandata.service.ISemestresService;
+import com.jdc.repojuandata.service.CarrerasService;
+import com.jdc.repojuandata.service.MateriasService;
+import com.jdc.repojuandata.service.SemestresService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,13 @@ import java.util.List;
 public class MateriasRest {
 
     @Autowired
-    private IMateriasService iMateriasService;
+    private MateriasService iMateriasService;
 
     @Autowired
-    private ICarrerasService iCarrerasService;
+    private CarrerasService iCarrerasService;
 
     @Autowired
-    private ISemestresService iSemestresService;
+    private SemestresService iSemestresService;
 
     @GetMapping("/listar")
     public ResponseEntity<List<MateriasEntity>> listarMaterias(){
