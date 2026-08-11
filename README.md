@@ -2,18 +2,12 @@
 
 Backend del proyecto JuanData desarrollado con Spring Boot, Maven, Java 21, Spring Security, JWT, JPA/Hibernate y PostgreSQL.
 
-## Ubicacion del proyecto
+## Repositorio
 
 Repositorio GitHub:
 
 ```bash
 https://github.com/barojas-gif/Backend-JuanData.git
-```
-
-Ruta local donde esta ubicado actualmente:
-
-```bash
-C:\Users\brian\Documents\Repositorio-JDC\RepoJuanData
 ```
 
 ## Requisitos
@@ -27,6 +21,8 @@ Antes de ejecutar el proyecto se necesita tener instalado:
 
 ## Clonar el proyecto
 
+Clonar significa descargar el proyecto desde GitHub al computador.
+
 ```bash
 git clone https://github.com/barojas-gif/Backend-JuanData.git
 cd Backend-JuanData
@@ -34,25 +30,27 @@ cd Backend-JuanData
 
 ## Configuracion de la base de datos local
 
-El proyecto usa PostgreSQL. Para correrlo en local se debe crear una base de datos, por ejemplo:
+El proyecto usa PostgreSQL. Para correrlo en el computador se debe crear primero una base de datos.
+
+Se puede crear una base de datos llamada `JuanData`:
 
 ```sql
 CREATE DATABASE JuanData;
 ```
 
-Luego se debe crear el archivo de configuracion local:
+Luego se debe crear el archivo de configuracion local copiando el archivo de ejemplo:
 
 ```bash
 copy src\main\resources\application-dev.properties.example src\main\resources\application-dev.properties
 ```
 
-Despues abrir este archivo:
+Despues se abre el archivo creado:
 
 ```bash
 src\main\resources\application-dev.properties
 ```
 
-Y cambiar estos datos por los de la base de datos local:
+Y se cambian estos datos por los datos reales de PostgreSQL:
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/JuanData?prepareThreshold=0
@@ -60,7 +58,15 @@ spring.datasource.username=TU_USUARIO
 spring.datasource.password=TU_PASSWORD
 ```
 
-Tambien se deben ajustar estas variables segun el entorno:
+Ejemplo:
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/JuanData?prepareThreshold=0
+spring.datasource.username=postgres
+spring.datasource.password=123456
+```
+
+Tambien se deben revisar estas configuraciones:
 
 ```properties
 spring.mail.username=tu-correo@gmail.com
@@ -126,6 +132,13 @@ El backend queda disponible normalmente en:
 ```bash
 http://localhost:8080
 ```
+
+Si aparece un error al iniciar, revisar primero:
+
+- Que PostgreSQL este encendido.
+- Que la base de datos `JuanData` exista.
+- Que el usuario y la contrasena en `application-dev.properties` sean correctos.
+- Que el puerto `8080` no este siendo usado por otra aplicacion.
 
 ## Compilar el proyecto
 
